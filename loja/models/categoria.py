@@ -5,5 +5,4 @@ class Categoria(models.Model):
     alterado_em = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return '{}'.format(self.Categoria)
-        
+        return '{}'.format(self.Categoria)      
