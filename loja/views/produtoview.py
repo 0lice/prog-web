@@ -102,6 +102,8 @@ def details_produto_view(request, id=None):
         produtos = produtos.filter(id=id)
     produto = produtos.first()
     print(produto)
+    Fabricantes = Fabricante.objects.all()
+    Categorias = Categoria.objects.all()
     context = {
         'produto': produto
     }
@@ -115,7 +117,9 @@ def delete_produto_view(request, id=None):
         produtos = produtos.filter(id=id)
     produto = produtos.first()
     print(produto)
-    context = {'produto' : produto}
+    Fabricantes = Fabricante.objects.all()
+    Categorias = Categoria.objects.all()
+    context = { 'produto': produto, 'fabricantes' : Fabricantes, 'categorias' : Categorias}
     return render(request, template_name='produto/produto-delete.html', context=context, status=200)
 
 def create_produto_view(request, id=None):
@@ -127,6 +131,8 @@ def create_produto_view(request, id=None):
         msgPromocao = request.POST.get("msgPromocao")
         preco = request.POST.get("preco")
         image = request.POST.get("image")
+        categoria = request.POST.get("CategoriaFk")
+        fabricante = request.POST.get("FabricanteFk")
         print("postback-create")
         print(produto)
         print(destaque)
@@ -139,6 +145,8 @@ def create_produto_view(request, id=None):
             obj_produto.Produto = produto
             obj_produto.destaque = (destaque is not None)
             obj_produto.promocao = (promocao is not None)
+            obj_produto.fabricante = Fabricante.objects.filter(id=fabricante).first()
+            obj_produto.categoria = Categoria.objects.filter(id=categoria).first()
             if msgPromocao is not None:
                 obj_produto.msgPromocao = msgPromocao
             obj_produto.preco = 0
@@ -161,4 +169,5 @@ def create_produto_view(request, id=None):
         except Exception as e:
             print("Erro inserindo produto: %s" % e)
         return redirect("/produto")
-    return render(request, template_name='produto/produto-create.html',status=200)
+
+    return render(request, template_name='produto/produto-create.html', context={"fabricantes": Fabricante.objects.all(), "categorias": Categoria.objects.all()}, status=200)
